@@ -1,0 +1,24 @@
+#!/bin/bash
+# chrome-profile-router-open — xdg-open compatible entry point for the Chrome
+# Profile Router Omarchy shell plugin. Forwards the URL to the running shell
+# over IPC so the plugin picks the Chromium profile; falls back to a direct
+# launch with the configured default profile when the shell is unreachable.
+set -u
+
+url="${1:-}"
+[ -n "$url" ] || exit 0
+
+if command -v omarchy-shell >/dev/null 2>&1; then
+  reply="$(omarchy-shell chrome-profile-router routeUrl "$url" 2>/dev/null || true)"
+  case "$reply" in
+    ok*) exit 0 ;;
+  esac
+fi
+
+# Fallback: read the default profile straight from config.json.
+config="$HOME/.config/omarchy/plugins/chrome-profile-router/config.json"
+profile="Default"
+if command -v python3 >/dev/null 2>&1 && [ -f "$config" ]; then
+  profile="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1])).get("default_profile", "Default"))' "$config" 2>/dev/null || echo "Default")"
+fi
+exec chromium --profile-directory="$profile" "$url"

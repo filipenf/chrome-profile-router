@@ -1,0 +1,8 @@
+{
+  "default_profile": "Default",
+  "mappings": {
+    "x.com": "Profile 1",
+    "hey.com": "Profile 1",
+    "github.com": "Default"
+  }
+}
