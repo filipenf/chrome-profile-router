@@ -47,6 +47,24 @@ It looks like this:
 
 Save the file. There is nothing to restart. New links use the new rules at once.
 
+## Change rules from the terminal
+
+No text editor needed. These commands update `config.json` for you:
+
+```bash
+# Send a site to a profile (adds the rule, or updates it if it exists)
+omarchy-shell chrome-profile-router setProfile example.com "Profile 1"
+
+# Change the fallback profile for everything without a rule
+omarchy-shell chrome-profile-router setDefault "Profile 2"
+```
+
+Check the result with the dry run:
+
+```bash
+omarchy-shell chrome-profile-router profileFor 'https://example.com/page'
+```
+
 ## Check it works (no browser opens)
 
 ```bash

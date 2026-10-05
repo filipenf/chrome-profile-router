@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "chrome-profile-router",
   "name": "Chrome Profile Router",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Routes URLs to Chromium profile directories by domain. Trigger with: omarchy-shell chrome-profile-router routeUrl 'https://...'",
   "kinds": ["service"],
   "keepLoaded": true,

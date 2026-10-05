@@ -8,6 +8,8 @@ import Quickshell.Io
 // There is no UI. URLs arrive over IPC (see the IpcHandler at the bottom):
 //   omarchy-shell chrome-profile-router routeUrl 'https://x.com/home'
 //   omarchy-shell chrome-profile-router profileFor 'https://x.com/home'  (dry run)
+//   omarchy-shell chrome-profile-router setProfile example.com "Profile 1"  (save rule)
+//   omarchy-shell chrome-profile-router setDefault "Profile 2"  (save fallback)
 //   omarchy-shell chrome-profile-router ping
 Item {
   id: root
@@ -89,12 +91,54 @@ Item {
     return "ok profile=" + profile;
   }
 
+  // Write the live routing table back to config.json. atomicWrites (see
+  // FileView above) guards against half-written files, and the write
+  // re-triggers onFileChanged so memory and disk converge on one state.
+  function saveConfig() {
+    var snapshot = {
+      default_profile: root.defaultProfile,
+      mappings: root.mappings
+    };
+    configFile.setText(JSON.stringify(snapshot, null, 2) + "\n");
+  }
+
+  // Point one domain at a profile and persist it, no text editor needed:
+  //   omarchy-shell chrome-profile-router setProfile example.com "Profile 1"
+  function setProfileFor(domain, profile) {
+    var d = String(domain || "").toLowerCase();
+    var p = String(profile || "");
+    if (d === "")
+      return "error: empty domain";
+    if (p === "")
+      return "error: empty profile";
+    var next = {};
+    var keys = Object.keys(root.mappings || {});
+    for (var i = 0; i < keys.length; i++)
+      next[keys[i]] = root.mappings[keys[i]];
+    next[d] = p;
+    root.mappings = next;
+    root.saveConfig();
+    return "ok " + d + " -> " + p;
+  }
+
+  // Change the fallback profile and persist it:
+  //   omarchy-shell chrome-profile-router setDefault "Profile 2"
+  function setDefaultProfile(profile) {
+    var p = String(profile || "");
+    if (p === "")
+      return "error: empty profile";
+    root.defaultProfile = p;
+    root.saveConfig();
+    return "ok default=" + p;
+  }
+
   // config.json loads once at startup and hot-reloads on every save,
   // so editing mappings needs no shell restart.
   FileView {
     id: configFile
     path: root.configPath
     watchChanges: true
+    atomicWrites: true
     printErrors: false
     onLoaded: root.applyConfigText(text())
     onLoadFailed: console.warn("chrome-profile-router: cannot read " + root.configPath + ", using defaults")
@@ -120,6 +164,14 @@ Item {
     // Dry run: report the profile without launching anything.
     function profileFor(url: string): string {
       return root.profileForUrl(url);
+    }
+    // Write path: upsert one mapping and persist config.json.
+    function setProfile(domain: string, profile: string): string {
+      return root.setProfileFor(domain, profile);
+    }
+    // Write path: change the fallback profile and persist config.json.
+    function setDefault(profile: string): string {
+      return root.setDefaultProfile(profile);
     }
     function configPath(): string {
       return root.configPath;
