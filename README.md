@@ -19,6 +19,12 @@ omarchy plugin add https://github.com/filipenf/chrome-profile-router.git --enabl
 
 Done. Click any link and it opens in the profile you chose.
 
+## Prefer a window?
+
+Open your app launcher and start **Chrome Profile Router Settings**. It shows every rule as a row you can
+edit, delete, or add to — plus the default profile at the bottom. Press **Save** and new links use the
+new rules at once. (Same window from a terminal: `omarchy-shell shell summon chrome-profile-router "{}"`.)
+
 ## Choose which site opens where
 
 Open this file in any text editor:

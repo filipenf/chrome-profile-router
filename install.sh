@@ -20,6 +20,8 @@ install -Dm755 chrome-profile-router-open "$HOME/.local/bin/chrome-profile-route
 
 echo "==> Registering .desktop handler"
 install -Dm644 chrome-profile-router.desktop "$HOME/.local/share/applications/chrome-profile-router.desktop"
+echo "==> Registering settings window launcher"
+install -Dm644 chrome-profile-router-settings.desktop "$HOME/.local/share/applications/chrome-profile-router-settings.desktop"
 update-desktop-database "$HOME/.local/share/applications" 2>/dev/null || true
 
 echo "==> Setting Chrome Profile Router as the default browser"

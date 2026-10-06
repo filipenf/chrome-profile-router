@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Chrome Profile Router Settings
+Comment=Choose which websites open in which Chromium profile
+Exec=omarchy-shell shell summon chrome-profile-router "{}"
+Icon=preferences-system-network
+Terminal=false
+Categories=Settings;

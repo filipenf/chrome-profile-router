@@ -2,11 +2,12 @@
   "schemaVersion": 1,
   "id": "chrome-profile-router",
   "name": "Chrome Profile Router",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Routes URLs to Chromium profile directories by domain. Trigger with: omarchy-shell chrome-profile-router routeUrl 'https://...'",
-  "kinds": ["service"],
+  "kinds": ["service", "panel"],
   "keepLoaded": true,
   "entryPoints": {
-    "service": "DomainRouter.qml"
+    "service": "DomainRouter.qml",
+    "panel": "Panel.qml"
   }
 }

@@ -23,6 +23,10 @@ Item {
   property string defaultProfile: "Default"
   property var mappings: ({})
 
+  // Emitted whenever config.json is (re)loaded. The settings panel
+  // listens to this to follow outside edits live.
+  signal settingsChanged()
+
   // Absolute path of the config.json sitting next to this file.
   // Qt.resolvedUrl() keeps working if the plugin folder is renamed or
   // forked; the $HOME path is a fallback for shells that resolve oddly.
@@ -58,6 +62,7 @@ Item {
       root.defaultProfile = parsed.default_profile;
     if (parsed.mappings && typeof parsed.mappings === "object")
       root.mappings = parsed.mappings;
+    root.settingsChanged();
   }
 
   // Pick a profile for a URL. Case-insensitive substring match against
